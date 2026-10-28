@@ -1,0 +1,102 @@
+/* Background tint and accent colors are set inline from settings (lib/card.js). */
+.lockplayer-card {
+    width: 460px;
+    margin-top: 28px;
+    padding: 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(235, 219, 178, 0.12);
+    spacing: 14px;
+    color: #ebdbb2;
+}
+
+.lockplayer-row {
+    spacing: 18px;
+}
+
+.lockplayer-art {
+    width: 96px;
+    height: 96px;
+    border-radius: 14px;
+    background-color: rgba(60, 56, 54, 0.9);
+    /* No box-shadow: St shadows background images as a square, which shows
+       behind the rounded cover. */
+    border: 1px solid rgba(235, 219, 178, 0.15);
+}
+
+.lockplayer-art-placeholder {
+    icon-size: 40px;
+    color: rgba(235, 219, 178, 0.5);
+}
+
+.lockplayer-info {
+    spacing: 4px;
+}
+
+.lockplayer-title {
+    font-size: 15pt;
+    font-weight: bold;
+}
+
+.lockplayer-subtitle {
+    font-size: 11pt;
+    color: rgba(235, 219, 178, 0.7);
+}
+
+.lockplayer-progress {
+    spacing: 10px;
+    margin-top: 8px;
+}
+
+.lockplayer-time {
+    font-size: 9pt;
+    font-feature-settings: "tnum";
+    color: rgba(235, 219, 178, 0.6);
+}
+
+.lockplayer-track {
+    height: 4px;
+    border-radius: 2px;
+    background-color: rgba(235, 219, 178, 0.18);
+}
+
+.lockplayer-fill {
+    border-radius: 2px;
+}
+
+.lockplayer-controls {
+    spacing: 14px;
+    margin-top: 4px;
+}
+
+.lockplayer-button {
+    padding: 8px;
+    border-radius: 99px;
+    color: #ebdbb2;
+}
+
+.lockplayer-button StIcon {
+    icon-size: 18px;
+}
+
+.lockplayer-button:hover,
+.lockplayer-button:focus {
+    background-color: rgba(235, 219, 178, 0.12);
+}
+
+.lockplayer-play StIcon {
+    icon-size: 24px;
+}
+
+.lockplayer-lyrics-toggle:checked {
+    color: #fe8019;
+}
+
+.lockplayer-lyrics {
+    height: 150px;
+}
+
+.lockplayer-lyric {
+    font-size: 12pt;
+    padding: 3px 0;
+    color: rgba(235, 219, 178, 0.45);
+}

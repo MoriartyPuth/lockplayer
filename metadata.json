@@ -1,0 +1,10 @@
+{
+  "uuid": "lockplayer@MoriartyPuth.github.io",
+  "name": "Lockplayer",
+  "description": "A now-playing card on the lock screen: album art, title, artist and album, a progress bar, playback controls, and synced lyrics from LRCLIB that scroll with the song.",
+  "shell-version": ["50"],
+  "session-modes": ["user", "unlock-dialog"],
+  "settings-schema": "org.gnome.shell.extensions.lockplayer",
+  "url": "https://github.com/MoriartyPuth/lockplayer",
+  "version-name": "1.0.0"
+}
