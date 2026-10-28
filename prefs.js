@@ -23,6 +23,8 @@ export default class LockplayerPreferences extends ExtensionPreferences {
         const card = new Adw.PreferencesGroup({title: 'Card'});
         page.add(card);
         toggle(card, 'big-artwork', 'Large album art', 'Clicking the cover on the lock screen toggles this too');
+        toggle(card, 'notifications-under-clock', 'Notifications under the clock',
+            'Instead of at the bottom of the screen');
 
         const opacity = new Adw.SpinRow({
             title: 'Background opacity',

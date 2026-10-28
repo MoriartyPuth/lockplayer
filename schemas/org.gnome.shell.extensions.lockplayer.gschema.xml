@@ -13,6 +13,10 @@
       <default>false</default>
       <summary>Show the album art large (also toggled by clicking the cover)</summary>
     </key>
+    <key name="notifications-under-clock" type="b">
+      <default>true</default>
+      <summary>Show lock screen notifications right under the clock and card instead of at the bottom of the screen</summary>
+    </key>
     <key name="accent-color" type="s">
       <default>'#fe8019'</default>
       <summary>Accent color for the progress bar and the current lyric line</summary>

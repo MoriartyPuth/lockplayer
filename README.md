@@ -17,6 +17,8 @@ with the clock when you start typing your password.
   exists. Results are cached in `~/.cache/lockplayer`, including misses, so each
   song is looked up once.
 - Click the cover for large album art. The lyrics button shows or hides lyrics.
+- Notifications move up under the clock and card instead of sitting at the
+  bottom of the screen (can be turned off).
 - Works with any MPRIS player (Spotube, Firefox, Spotify, …). It talks to
   players over D-Bus directly instead of through GNOME's media list, so
   extensions that hide GNOME's media notification don't affect it.

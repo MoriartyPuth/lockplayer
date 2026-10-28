@@ -5,6 +5,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 import {Http} from './lib/cache.js';
 import {NowPlayingCard} from './lib/card.js';
+import {ColumnLayout} from './lib/layout.js';
 import {MprisWatcher} from './lib/mpris.js';
 
 // Runs in the user and unlock-dialog session modes so it stays enabled while
@@ -19,6 +20,7 @@ export default class LockplayerExtension extends Extension {
 
         Main.screenShield._lockDialogGroup.connectObject('child-added', () => this._queueAttach(), this);
         Main.screenShield.connectObject('locked-changed', () => this._queueAttach(), this);
+        this._settings.connectObject('changed::notifications-under-clock', () => this._syncLayout(), this);
         this._queueAttach();
     }
 
@@ -28,6 +30,8 @@ export default class LockplayerExtension extends Extension {
         this._attachId = 0;
         Main.screenShield._lockDialogGroup.disconnectObject(this);
         Main.screenShield.disconnectObject(this);
+        this._settings.disconnectObject(this);
+        this._restoreLayout();
         this._card?.destroy();
         this._card = null;
         this._http.destroy();
@@ -62,5 +66,33 @@ export default class LockplayerExtension extends Extension {
         });
         // Under the time and date, above the "click to unlock" hint.
         clock.insert_child_at_index(this._card, 2);
+        this._syncLayout();
+    }
+
+    // Swap GNOME's lock screen layout for one that stacks the notifications
+    // under the clock column, keeping the original to put back.
+    _syncLayout() {
+        const dialog = Main.screenShield._dialog;
+        const column = dialog?._stack?.get_parent();
+        if (!column)
+            return;
+
+        const wanted = this._settings.get_boolean('notifications-under-clock');
+        if (wanted && !this._layout) {
+            this._layout = {column, original: column.layout_manager};
+            column.layout_manager = new ColumnLayout(dialog._stack, dialog._notificationsBox, dialog._otherUserButton);
+            column.connectObject('destroy', () => (this._layout = null), this);
+        } else if (!wanted) {
+            this._restoreLayout();
+        }
+    }
+
+    _restoreLayout() {
+        if (!this._layout)
+            return;
+        const {column, original} = this._layout;
+        this._layout = null;
+        column.disconnectObject(this);
+        column.layout_manager = original;
     }
 }
