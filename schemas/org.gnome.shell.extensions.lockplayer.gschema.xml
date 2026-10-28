@@ -17,6 +17,10 @@
       <default>true</default>
       <summary>Show lock screen notifications right under the clock and card instead of at the bottom of the screen</summary>
     </key>
+    <key name="hide-gnome-media" type="b">
+      <default>true</default>
+      <summary>Hide GNOME's own media player card from the lock screen notifications, since the now-playing card replaces it</summary>
+    </key>
     <key name="accent-color" type="s">
       <default>'#fe8019'</default>
       <summary>Accent color for the progress bar and the current lyric line</summary>

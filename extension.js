@@ -20,7 +20,10 @@ export default class LockplayerExtension extends Extension {
 
         Main.screenShield._lockDialogGroup.connectObject('child-added', () => this._queueAttach(), this);
         Main.screenShield.connectObject('locked-changed', () => this._queueAttach(), this);
-        this._settings.connectObject('changed::notifications-under-clock', () => this._syncLayout(), this);
+        this._settings.connectObject(
+            'changed::notifications-under-clock', () => this._syncLayout(),
+            'changed::hide-gnome-media', () => this._syncGnomeMedia(),
+            this);
         this._queueAttach();
     }
 
@@ -32,6 +35,7 @@ export default class LockplayerExtension extends Extension {
         Main.screenShield.disconnectObject(this);
         this._settings.disconnectObject(this);
         this._restoreLayout();
+        this._restoreGnomeMedia();
         this._card?.destroy();
         this._card = null;
         this._http.destroy();
@@ -67,6 +71,43 @@ export default class LockplayerExtension extends Extension {
         // Under the time and date, above the "click to unlock" hint.
         clock.insert_child_at_index(this._card, 2);
         this._syncLayout();
+        this._syncGnomeMedia();
+    }
+
+    // GNOME's notifications box keeps one media card per MPRIS player in
+    // _players; hide them (re-checking whenever a player comes or goes, after
+    // GNOME's own handler has added its card) since our card replaces them.
+    _syncGnomeMedia() {
+        const box = Main.screenShield._dialog?._notificationsBox;
+        if (!box?._players)
+            return;
+
+        if (this._mediaBox !== box) {
+            this._restoreGnomeMedia();
+            this._mediaBox = box;
+            box._mediaSource?.connectObject(
+                'player-added', () => this._syncGnomeMedia(),
+                'player-removed', () => this._syncGnomeMedia(),
+                this);
+            box.connectObject('destroy', () => (this._mediaBox = null), this);
+        }
+
+        const hide = this._settings.get_boolean('hide-gnome-media');
+        for (const message of box._players.values())
+            message.visible = !hide;
+        box._updateVisibility?.();
+    }
+
+    _restoreGnomeMedia() {
+        const box = this._mediaBox;
+        if (!box)
+            return;
+        this._mediaBox = null;
+        box._mediaSource?.disconnectObject(this);
+        box.disconnectObject(this);
+        for (const message of box._players?.values() ?? [])
+            message.visible = true;
+        box._updateVisibility?.();
     }
 
     // Swap GNOME's lock screen layout for one that stacks the notifications

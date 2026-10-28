@@ -25,6 +25,8 @@ export default class LockplayerPreferences extends ExtensionPreferences {
         toggle(card, 'big-artwork', 'Large album art', 'Clicking the cover on the lock screen toggles this too');
         toggle(card, 'notifications-under-clock', 'Notifications under the clock',
             'Instead of at the bottom of the screen');
+        toggle(card, 'hide-gnome-media', "Hide GNOME's media card",
+            'The now-playing card replaces it on the lock screen');
 
         const opacity = new Adw.SpinRow({
             title: 'Background opacity',
