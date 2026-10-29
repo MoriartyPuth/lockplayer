@@ -120,20 +120,43 @@ export default class LockplayerExtension extends Extension {
 
         const wanted = this._settings.get_boolean('notifications-under-clock');
         if (wanted && !this._layout) {
-            this._layout = {column, original: column.layout_manager};
-            column.layout_manager = new ColumnLayout(dialog._stack, dialog._notificationsBox, dialog._otherUserButton);
-            column.connectObject('destroy', () => (this._layout = null), this);
+            const {_adjustment: adjustment, _notificationsBox: notifications, _clock: clock} = dialog;
+            this._layout = {column, original: column.layout_manager, adjustment, notifications, hint: clock?._hint};
+            column.layout_manager = new ColumnLayout(dialog);
+            // Owned by the layout record, not the extension, so restoring the
+            // layout doesn't also drop the media-card handlers on the same box.
+            const owner = this._layout;
+            column.connectObject('destroy', () => (this._layout = null), owner);
+            // The layout follows the clock -> prompt transition, which only
+            // changes opacity and scale, so ask for a relayout as it moves.
+            adjustment?.connectObject('notify::value', () => column.queue_relayout(), owner);
+            notifications?.connectObject('notify::visible', () => this._syncHint(), owner);
+            this._syncHint();
         } else if (!wanted) {
             this._restoreLayout();
         }
     }
 
+    // The "click or press a key to unlock" hint sits at the bottom of the
+    // clock column, between the card and the notifications; drop it while
+    // there are notifications so they sit right under the card.
+    _syncHint() {
+        const {notifications, hint} = this._layout ?? {};
+        if (hint)
+            hint.visible = !notifications?.visible;
+    }
+
     _restoreLayout() {
         if (!this._layout)
             return;
-        const {column, original} = this._layout;
+        const layout = this._layout;
+        const {column, original, adjustment, notifications, hint} = layout;
         this._layout = null;
-        column.disconnectObject(this);
+        column.disconnectObject(layout);
+        adjustment?.disconnectObject(layout);
+        notifications?.disconnectObject(layout);
+        if (hint)
+            hint.visible = true;
         column.layout_manager = original;
     }
 }
